@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# folders
+correlations/
+Nz_Bayes/
+
+
 # C extensions
 *.so
 
