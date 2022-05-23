@@ -4,13 +4,13 @@ nselect = 40
 fontSize = 15
 COL2(diverging = c("RdBu", "BrBG", "PiYG", "PRGn", "PuOr", "RdYlBu"), n = 200)
 
-for (set in 2:5)
+for (set in list(2, 3, 4, 5, 6))
 {
-	fname_1 = paste('Correlation/set_', toString(set), '/z0.1t0.3.csv', sep='')
-	fname_2 = paste('Correlation/set_', toString(set), '/z0.3t0.5.csv', sep='')
-	fname_3 = paste('Correlation/set_', toString(set), '/z0.5t0.7.csv', sep='')
-	fname_4 = paste('Correlation/set_', toString(set), '/z0.7t0.9.csv', sep='')
-	fname_5 = paste('Correlation/set_', toString(set), '/z0.9t1.2.csv', sep='')
+	fname_1 = paste('Correlations/set_', toString(set), '/z0.1t0.3.csv', sep='')
+	fname_2 = paste('Correlations/set_', toString(set), '/z0.3t0.5.csv', sep='')
+	fname_3 = paste('Correlations/set_', toString(set), '/z0.5t0.7.csv', sep='')
+	fname_4 = paste('Correlations/set_', toString(set), '/z0.7t0.9.csv', sep='')
+	fname_5 = paste('Correlations/set_', toString(set), '/z0.9t1.2.csv', sep='')
 
 	sample_1 = read.csv(fname_1)
 	sample_2 = read.csv(fname_2)
