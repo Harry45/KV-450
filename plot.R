@@ -4,13 +4,14 @@ nselect = 40
 fontSize = 15
 COL2(diverging = c("RdBu", "BrBG", "PiYG", "PRGn", "PuOr", "RdYlBu"), n = 200)
 
+nsamples = 15000
 for (set in list(2, 3, 4, 5, 6))
 {
-	fname_1 = paste('Correlations/set_', toString(set), '/z0.1t0.3.csv', sep='')
-	fname_2 = paste('Correlations/set_', toString(set), '/z0.3t0.5.csv', sep='')
-	fname_3 = paste('Correlations/set_', toString(set), '/z0.5t0.7.csv', sep='')
-	fname_4 = paste('Correlations/set_', toString(set), '/z0.7t0.9.csv', sep='')
-	fname_5 = paste('Correlations/set_', toString(set), '/z0.9t1.2.csv', sep='')
+	fname_1 = paste('Correlations/set_', toString(nsamples), '_', toString(set), '/z0.1t0.3.csv', sep='')
+	fname_2 = paste('Correlations/set_', toString(nsamples), '_', toString(set), '/z0.3t0.5.csv', sep='')
+	fname_3 = paste('Correlations/set_', toString(nsamples), '_', toString(set), '/z0.5t0.7.csv', sep='')
+	fname_4 = paste('Correlations/set_', toString(nsamples), '_', toString(set), '/z0.7t0.9.csv', sep='')
+	fname_5 = paste('Correlations/set_', toString(nsamples), '_', toString(set), '/z0.9t1.2.csv', sep='')
 
 	sample_1 = read.csv(fname_1)
 	sample_2 = read.csv(fname_2)
@@ -31,18 +32,23 @@ for (set in list(2, 3, 4, 5, 6))
 	matrix_5 = cor(t(heights_5))
 
 
-	png(height=1200, width=1200, pointsize=fontSize, file=paste('plots/set_', toString(set), "/1_correlation.pdf", sep =''))
+	path = paste('plots/set_', toString(nsamples), '_', toString(set), "/1_correlation.pdf", sep ='')
+	png(height=1200, width=1200, pointsize=fontSize, file=path)
 	corrplot(matrix_1[0:nselect, 0:nselect], method = "ellipse", type = "lower", diag = FALSE, col = COL2('PRGn'), cl.ratio=0.05)
 
-	png(height=1200, width=1200, pointsize=fontSize, file=paste('plots/set_', toString(set), "/2_correlation.pdf", sep =''))
+	path = paste('plots/set_', toString(nsamples), '_', toString(set), "/2_correlation.pdf", sep ='')
+	png(height=1200, width=1200, pointsize=fontSize, file=path)
 	corrplot(matrix_2[0:nselect, 0:nselect], method = "ellipse", type = "lower", diag = FALSE, col = COL2('PRGn'), cl.ratio=0.05)
 
-	png(height=1200, width=1200, pointsize=fontSize, file=paste('plots/set_', toString(set), "/3_correlation.pdf", sep =''))
+	path = paste('plots/set_', toString(nsamples), '_', toString(set), "/3_correlation.pdf", sep ='')
+	png(height=1200, width=1200, pointsize=fontSize, file=path)
 	corrplot(matrix_3[0:nselect, 0:nselect], method = "ellipse", type = "lower", diag = FALSE, col = COL2('PRGn'), cl.ratio=0.05)
 
-	png(height=1200, width=1200, pointsize=fontSize, file=paste('plots/set_', toString(set), "/4_correlation.pdf", sep =''))
+	path = paste('plots/set_', toString(nsamples), '_', toString(set), "/4_correlation.pdf", sep ='')
+	png(height=1200, width=1200, pointsize=fontSize, file=path)
 	corrplot(matrix_4[0:nselect, 0:nselect], method = "ellipse", type = "lower", diag = FALSE, col = COL2('PRGn'), cl.ratio=0.05)
 
-	png(height=1200, width=1200, pointsize=fontSize, file=paste('plots/set_', toString(set), "/5_correlation.pdf", sep =''))
+	path = paste('plots/set_', toString(nsamples), '_', toString(set), "/5_correlation.pdf", sep ='')
+	png(height=1200, width=1200, pointsize=fontSize, file=path)
 	corrplot(matrix_5[0:nselect, 0:nselect], method = "ellipse", type = "lower", diag = FALSE, col = COL2('PRGn'), cl.ratio=0.05)
 }
