@@ -9,6 +9,7 @@ Nz_Bayes/
 subsets/
 plots/
 chains/
+data/
 
 # C extensions
 *.so
