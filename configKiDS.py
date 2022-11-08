@@ -16,6 +16,6 @@ def config() -> ml_collections.ConfigDict:
         ml_collections.ConfigDict: the set of configurations
     """
 
-    config = ml_collections.ConfigDict()
+    conf = ml_collections.ConfigDict()
 
-    return config
+    return conf
