@@ -4,12 +4,10 @@ __pycache__/
 *$py.class
 
 # folders
-Correlations/
-Nz_Bayes/
-subsets/
-plots/
 chains/
-data/
+correlations/
+nz-bayes/
+subsets/
 
 # C extensions
 *.so
