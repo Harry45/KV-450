@@ -1,2 +1,3 @@
 # KV-450
-Analysis of KV-450 data with new redshift distribution.
+
+Analysis of the KV-450 cosmological data with the new redshift distributions developed using Bayesian Hierarchical Method.

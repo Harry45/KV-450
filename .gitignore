@@ -4,10 +4,10 @@ __pycache__/
 *$py.class
 
 # folders
-chains/
-correlations/
-nz-bayes/
-subsets/
+gKV/chains/
+gKV/correlations/
+gKV/nz-bayes/
+gKV/subsets/
 
 # C extensions
 *.so
