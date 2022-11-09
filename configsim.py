@@ -9,7 +9,7 @@ Script: Contains all the configurations required for running the code (Simulatio
 import ml_collections
 
 
-def configsim() -> ml_collections.ConfigDict:
+def get_config() -> ml_collections.ConfigDict:
     """Contains a series of configurations required for the BHM method.
 
     Returns:

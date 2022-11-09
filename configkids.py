@@ -9,7 +9,7 @@ Script: Contains all the configurations required for running the code (KV-450)
 import ml_collections
 
 
-def configkids() -> ml_collections.ConfigDict:
+def get_config() -> ml_collections.ConfigDict:
     """Contains a series of configurations required for the BHM method.
 
     Returns:
