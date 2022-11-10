@@ -6,49 +6,61 @@ Project: KiDS+VIKING-450 cosmology with Bayesian hierarchical model redshift dis
 Script: Contains all the configurations required for running the code (KV-450)
 """
 
-import ml_collections
+
+from ml_collections import ConfigDict
+import numpy as np
 
 
-def get_config() -> ml_collections.ConfigDict:
+def get_config() -> ConfigDict:
     """Contains a series of configurations required for the BHM method.
 
     Returns:
-        ml_collections.ConfigDict: the set of configurations
+        ConfigDict: the set of configurations
     """
 
-    conf = ml_collections.ConfigDict()
+    conf = ConfigDict()
 
     # general settings
     conf.filters = ['u', 'g', 'r', 'i', 'Z2', 'Y', 'J', 'H', 'Ks']
+    conf.eps = 1E-300
+    conf.logeps = np.log(conf.eps)
 
     # paths
-    conf.path = path = ml_collections.ConfigDict()
+    conf.path = path = ConfigDict()
     path.data = 'data/kids_1/'
     path.output = 'output/kids_1/'
     path.filter = 'filters/'
     path.sed = 'sed/'
 
     # filenames (for the outputs)
-    conf.fnames = fnames = ml_collections.ConfigDict()
+    conf.fnames = fnames = ConfigDict()
     fnames.fluxcorr = 'fluxcorr'
     fnames.fluxcorr_err = 'fluxcorr_err'
 
     # redshift configurations
-    conf.redshift = redshift = ml_collections.ConfigDict()
+    conf.redshift = redshift = ConfigDict()
     redshift.zmin = 0.0
     redshift.zmax = 3.0
     redshift.zstep = 0.05
     redshift.zlist = [0.05] * 6
 
+    # magnitude setup
+    conf.mag = mag = ConfigDict()
+    mag.min = 19.0
+    mag.max = 25.0
+    mag.finedelta = 0.1
+    mag.delta = 1.0
+
     # fixed values
-    conf.values = fixed = ml_collections.ConfigDict()
+    conf.values = fixed = ConfigDict()
     fixed.nsources = 100000
     fixed.chunk = 1000
     fixed.nlikechunk = 1
     fixed.nchain = 1
+    fixed.referencefilter = 2
 
     # numbers related to sampling procedure
-    conf.sampling = sampling = ml_collections.ConfigDict()
+    conf.sampling = sampling = ConfigDict()
     sampling.nsamples = 1000000
     sampling.resume = 55000
     sampling.minsamples = 1000
@@ -56,7 +68,7 @@ def get_config() -> ml_collections.ConfigDict:
     sampling.ncore = 4
 
     # boolean configurations
-    conf.boolean = boolean = ml_collections.ConfigDict()
+    conf.boolean = boolean = ConfigDict()
     boolean.likelihood = True
     boolean.samples = True
     boolean.resume = False
