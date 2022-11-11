@@ -149,67 +149,74 @@ def prior_maker(nbins: int, trange: np.ndarray, config: ConfigDict) -> np.ndarra
     return prior
 
 
-def nbins_caculator(zlist, mlist, t1):
-    m1 = np.round(np.arange(mlist[0], mlist[1]+(2*mlist[3]), mlist[3]), 5)[:-2]
+def nbins_calculator(trange: np.ndarray, config: ConfigDict) -> int:
+    """Calculates the number of bins
+
+    Args:
+        trange (np.ndarray): number of types
+        config (ConfigDict): a configuration file
+
+    Returns:
+        int: the number of bins
+    """
+    mag = np.arange(config.mag.min, config.mag.max + (2 * config.mag.delta), config.mag.delta)[:-2]
     total_z = 0
-    for i in range(len(m1)):
-        z = np.round(np.arange(zlist[0], zlist[1]+(2*zlist[3+i]), zlist[3+i]), 5)
-        total_z += len(z)-2
-    return total_z * len(t1)
+    for i in range(len(mag)):
+        zmax = config.redshift.zmax + (2 * config.redshift.zlist[i])
+        redshift = np.arange(config.redshift.zmin, zmax, config.redshift.zlist[i])
+        total_z += len(redshift) - 2
+    return total_z * len(trange)
 
 
-def running_mean_general(x, N):
-    mid = int(np.floor(N/2))
-    y = np.zeros(len(x)+(2*mid))
-    y[mid:-mid] = x
+def running_mean_general(xvalues: np.ndarray, ndata: int) -> np.ndarray:
+    """Calculates the running mean.
 
-    y[:mid] = x[0]
-    y[-mid:] = x[-1]
+    Args:
+        xvalues (np.ndarray): the values over which to compute the running mean.
+        ndata (int): the number of data.
 
-    y[:mid] = 0
-    y[-mid:] = 0
+    Returns:
+        np.ndarray: the running mean
+    """
+    mid = int(np.floor(ndata / 2))
 
-    cumsum = np.cumsum(np.insert(y, 0, 0))
-    return (cumsum[N:] - cumsum[:-N]) / float(N)
+    yvalues = np.zeros(len(xvalues) + (2 * mid))
+    yvalues[mid:-mid] = xvalues
+
+    yvalues[:mid] = xvalues[0]
+    yvalues[-mid:] = xvalues[-1]
+
+    yvalues[:mid] = 0
+    yvalues[-mid:] = 0
+
+    cumsum = np.cumsum(np.insert(yvalues, 0, 0))
+    return (cumsum[ndata:] - cumsum[:-ndata]) / float(ndata)
 
 
-def running_mean_general_convol(x, ratio):
-    N = len(ratio)
-    mid = int(np.floor(N/2))
-    y = np.zeros(len(x)+(2*mid))
-    y[mid:-mid] = x
+def running_mean_general_convol(xvalues: np.ndarray, ratio: np.ndarray) -> np.ndarray:
+    """Calculates the running mean using convolution
 
-    y[:mid] = x[0]
-    y[-mid:] = x[-1]
+    Args:
+        xvalues (np.ndarray): the inputs
+        ratio (np.ndarray): the ratio to use
 
-    y[:mid] = 0
-    y[-mid:] = 0
+    Returns:
+        np.ndarray: the running mean
+    """
+    ndata = len(ratio)
+    mid = int(np.floor(ndata / 2))
+    yvalues = np.zeros(len(xvalues) + (2 * mid))
+    yvalues[mid:-mid] = xvalues
+
+    yvalues[:mid] = xvalues[0]
+    yvalues[-mid:] = xvalues[-1]
+
+    yvalues[:mid] = 0
+    yvalues[-mid:] = 0
 
     ratio = np.array(ratio)
     ratio /= np.sum(ratio)
 
-    y = np.convolve(y, ratio, mode='valid')
+    yvalues = np.convolve(yvalues, ratio, mode='valid')
 
-    return y
-
-
-def distribution_average(like, zlist, mlist, t1, equation, N):
-    like_2 = np.ones_like(like)
-    z1 = np.round(np.arange(zlist[0], zlist[1]+(2*zlist[3]), zlist[3]), 5)[:-2]
-    m = np.round(np.arange(mlist[0], mlist[1]+(2*mlist[3]), mlist[3]), 5)[:-2]
-    total_z = 0
-    for i in range(len(m)):
-        z = np.round(np.arange(zlist[0], zlist[1] +
-                               (2*zlist[3+i]), zlist[3+i]), 5)
-        total_z2 = total_z + len(z)-2
-        trial = like[(len(t1)*total_z):(total_z2*len(t1))].reshape(
-            len(t1), (len(z)-2))
-        trial_2 = np.ones_like(trial)
-        for k in range(len(t1)):
-            trial_2[k] = equation(trial[k], N)
-            #trial_2[k] = idt.gaussian_filter(trial[k],1)
-            trial_2[k][trial_2[k] == np.min(trial_2[k])] = np.min(trial[k])
-        like_2[(len(t1)*total_z):(total_z2*len(t1))] = trial_2.flatten()
-        total_z = total_z2
-
-    return like_2
+    return yvalues

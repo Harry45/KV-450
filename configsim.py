@@ -21,6 +21,8 @@ def get_config() -> ConfigDict:
 
     # general settings
     conf.filters = ['u', 'g', 'r', 'i', 'Z2', 'Y', 'J', 'H', 'Ks']
+    conf.fliterlist = [f'KiDSVIKING_{f}.res' for f in conf.filters]
+    conf.ntomo = 1
     conf.eps = 1E-300
     conf.logeps = np.log(conf.eps)
 

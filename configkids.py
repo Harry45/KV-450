@@ -20,8 +20,29 @@ def get_config() -> ConfigDict:
 
     conf = ConfigDict()
 
-    # general settings
+    # filters
     conf.filters = ['u', 'g', 'r', 'i', 'Z2', 'Y', 'J', 'H', 'Ks']
+    conf.filterlist = [f'KiDSVIKING_{f}.res' for f in conf.filters]
+
+    # bands
+    conf.bands = ['u', 'g', 'r', 'i', 'Z', 'Y', 'J', 'H', 'Ks']
+    conf.nband = len(conf.filters)
+
+    # catalogue
+    conf.cat = ['9', 'S', '23', '15', '12']
+    conf.catnames = [f'KV450_G{c}_reweight_3x4x4_v2_good.cat' for c in conf.cat]
+
+    # columns in the data
+    conf.cols = cols = ConfigDict()
+    cols.mag = [f'MAG_GAAP_{b}' for b in conf.bands]
+    cols.mag_err = [f'MAGERR_GAAP_{b}' for b in conf.bands]
+    cols.flux = [f'FLUX_GAAP_{b}' for b in conf.bands]
+    cols.flux_err = [f'FLUXERR_GAAP_{b}' for b in conf.bands]
+    cols.ext = [f'EXTINCTION_{b}' for b in conf.bands]
+    cols.mag_lim = [f'MAG_LIM_{b}' for b in conf.bands]
+
+    # fixed numbers
+    conf.ntomo = 1
     conf.eps = 1E-300
     conf.logeps = np.log(conf.eps)
 
