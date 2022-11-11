@@ -2,6 +2,24 @@
 
 Analysis of the KV-450 cosmological data with the new redshift distributions developed using Bayesian Hierarchical Method.
 
+## Structure of the directories
+
+```
+.
+├── configkids.py
+├── configsim.py
+├── cosmo
+├── data
+├── filters
+├── gKV
+├── main.py
+├── raw
+├── README.md
+├── sed
+├── src
+└── utils
+```
+
 - We should pass the configuration file to the function.
 
 ## Experiments
