@@ -12,7 +12,13 @@ from astropy.table import Table
 import numpy as np
 
 
-def cleaning(config: ConfigDict, save: bool):
+def cleaning(config: ConfigDict, save: bool) -> None:
+    """Process the data and store them. We have 5 catalogues - we combine them into a single file.
+
+    Args:
+        config (ConfigDict): a configuration files.
+        save (bool): option to save the files.
+    """
 
     for cat in range(config.catnames):
         fits_file = fits.open(cat, memmap=True)
