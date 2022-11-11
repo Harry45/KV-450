@@ -210,20 +210,20 @@ def cleaning(config: ConfigDict, save: bool):
 #    plt.show()
 # plt.hist(complete_data_set[:,18])
 # plt.show()
-z_max = [0.3, 0.5, 0.7, 0.9, 1.2]
-z_min = [0.1, 0.3, 0.5, 0.7, 0.9]
+# z_max = [0.3, 0.5, 0.7, 0.9, 1.2]
+# z_min = [0.1, 0.3, 0.5, 0.7, 0.9]
 
-#'''Name Output Files'''
-mag_names = ['mag_bin_1', 'mag_bin_2', 'mag_bin_3', 'mag_bin_4', 'mag_bin_5']
-error_names = ['error_bin_1', 'error_bin_2', 'error_bin_3', 'error_bin_4', 'error_bin_5']
+# #'''Name Output Files'''
+# mag_names = ['mag_bin_1', 'mag_bin_2', 'mag_bin_3', 'mag_bin_4', 'mag_bin_5']
+# error_names = ['error_bin_1', 'error_bin_2', 'error_bin_3', 'error_bin_4', 'error_bin_5']
 
-for i in range(len(z_max)):
-    '''Bin Data by Redshift'''
-    new_data_set = complete_data_set[complete_data_set[:, -1] < z_max[i]]
-    new_data_set = new_data_set[new_data_set[:, -1] > z_min[i]]
+# for i in range(len(z_max)):
+#     '''Bin Data by Redshift'''
+#     new_data_set = complete_data_set[complete_data_set[:, -1] < z_max[i]]
+#     new_data_set = new_data_set[new_data_set[:, -1] > z_min[i]]
 
-    fobs = new_data_set[:, :9]
-    fobserr = new_data_set[:, 9:18]
-    print(z_max[i], fobs.shape[0])
-    np.save('../data/{0}'.format(mag_names[i]), fobs)
-    np.save('../data/{0}'.format(error_names[i]), fobserr)
+#     fobs = new_data_set[:, :9]
+#     fobserr = new_data_set[:, 9:18]
+#     print(z_max[i], fobs.shape[0])
+#     np.save('../data/{0}'.format(mag_names[i]), fobs)
+#     np.save('../data/{0}'.format(error_names[i]), fobserr)
