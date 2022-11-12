@@ -11,13 +11,18 @@ from astropy.io import fits
 import numpy as np
 
 
-def combine_cols(fitsfile: fits, name: list, save: bool = False, **kwargs) -> None:
+def combine_cols(config: ConfigDict, save: bool = False, **kwargs) -> None:
     """Combine different columns and save them
 
     Args:
+        fitsfile (fits): the fits file
         name (list): _description_
         save (bool, optional): _description_. Defaults to False.
     """
+    for cat in range(config.catnames):
+        fits_file = fits.open(cat, memmap=True)
+        data = fits_file[1].data
+        arr = np.asarray([data[config.cols.mag[i]] for i in range(config.nband)]).T
 
 
 def cleaning(config: ConfigDict, save: bool = False) -> None:
