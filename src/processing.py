@@ -11,105 +11,77 @@ from astropy.io import fits
 import numpy as np
 
 
-def combine_cols(config: ConfigDict, save: bool = False, **kwargs) -> None:
-    """Combine different columns and save them
+def extract_column(col: str, config: ConfigDict, save: bool = False, **kwargs) -> np.ndarray:
+    """Extract the different columns and save them to a file in the folder data/processed/. Important columns are:
+
+    9 columns (9 bands)
+    -------------------
+    - MAG_GAAP
+    - MAGERR_GAAP
+    - FLUX_GAAP
+    - FLUXERR_GAAP
+    - EXTINCTION
+    - MAG_LIM
+
+    Only one column
+    ---------------
+    - Z_B
+    - THELI_NAME
+    - MAG_AUTO
+    - recal_weight
 
     Args:
-        fitsfile (fits): the fits file
-        name (list): _description_
+        col (str): name of the column to combine
+        config (ConfigDict): a configuration file containing the configurations
         save (bool, optional): _description_. Defaults to False.
     """
-    for cat in range(config.catnames):
-        fits_file = fits.open(cat, memmap=True)
-        data = fits_file[1].data
-        arr = np.asarray([data[config.cols.mag[i]] for i in range(config.nband)]).T
-
-
-def cleaning(config: ConfigDict, save: bool = False) -> None:
-    """Process the data and store them. We have 5 catalogues - we combine them into a single file.
-
-    Args:
-        config (ConfigDict): a configuration files.
-        save (bool): option to save the files. Default to False.
-    """
-    fobs_complete = list()
-    fobserr_complete = list()
-    bpz_complete = list()
-    ex_complete = list()
-    lim_complete = list()
-    name_complete = list()
-    mag_0_complete = list()
-    flux_complete = list()
-    flux_e_complete = list()
-    weight_complete = list()
-
+    array_complete = list()
     for cat in range(config.catnames):
         fits_file = fits.open(cat, memmap=True)
         data = fits_file[1].data
 
-        # important columns
-        fobs = np.asarray([data[config.cols.mag[i]] for i in range(config.nband)]).T
-        fobserr = np.asarray([data[config.cols.mag_err[i]] for i in range(config.nband)]).T
-        flux = np.asarray([data[config.cols.flux[i]] for i in range(config.nband)]).T
-        fluxerr = np.asarray([data[config.cols.flux_err[i]] for i in range(config.nband)]).T
-        ext = np.asarray([data[config.cols.ext[i]] for i in range(config.nband)]).T
-        mag_lim = np.asarray([data[config.cols.mag_lim[i]] for i in range(config.nband)]).T
-
-        # flags
+        # identify the flags in the data
         flag = data['GAAP_Flag_ugriZYJHKs']
-        bpz = data['Z_B']
-        name = data['THELI_NAME']
-        mag_0 = data['MAG_AUTO']
-        weight = data['recal_weight']
 
-        # Filter data by flags
-        fobs = fobs[flag == 0, :]
-        fobserr = fobserr[flag == 0, :]
-        flux = flux[flag == 0]
-        fluxerr = fluxerr[flag == 0]
-        bpz = bpz[flag == 0]
-        ext = ext[flag == 0, :]
-        mag_lim = mag_lim[flag == 0, :]
-        name = name[flag == 0]
-        mag_0 = mag_0[flag == 0]
-        weight = weight[flag == 0]
+        # find the names of the columns
+        names = np.array(data.names)
+        columns = names[[names[i].startswith(col) for i in range(len(names))]]
 
-        # append all data
-        fobs_complete.append(fobs)
-        fobserr_complete.append(fobserr)
-        flux_complete.append(flux)
-        flux_e_complete.append(fluxerr)
-        ex_complete.append(ext)
-        lim_complete.append(mag_lim)
-
-        bpz_complete.append(bpz)
-        name_complete.append(name)
-        mag_0_complete.append(mag_0)
-        weight_complete.append(weight)
-
-    fobs_complete = np.concatenate(fobs_complete, axis=0)
-    fobserr_complete = np.concatenate(fobserr_complete, axis=0)
-    flux_complete = np.concatenate(flux_complete, axis=0)
-    flux_e_complete = np.concatenate(flux, axis=0)
-    ex_complete = np.concatenate(ex_complete, axis=0)
-    lim_complete = np.concatenate(lim_complete, axis=0)
-
-    bpz_complete = np.asarray(bpz_complete)
-    name_complete = np.asarray(name_complete)
-    mag_0_complete = np.asarray(mag_0_complete)
-    weight_complete = np.asarray(weight_complete)
+        if len(columns) > 1:
+            colname = [f'{col}_{b}' for b in config.bands]
+            arr = np.asarray([data[c] for c in colname]).T
+        else:
+            arr = data[col]
+        array_complete.append(arr[flag == 0])
+    if len(columns) > 1:
+        array_complete = np.concatenate(array_complete, axis=0)
+    else:
+        array_complete = np.array(array_complete)
 
     if save:
-        directory = 'data/processed/'
-        os.makedirs(directory, exist_ok=True)
-        np.save(directory + 'flux.npy', flux_complete)
-        np.save(directory + 'flux_err.npy', flux_e_complete)
-        np.save(directory + 'mag.npy', fobs_complete)
-        np.save(directory + 'mag_err.npy', fobserr_complete)
-        np.save(directory + 'ex.npy', ex_complete)
-        np.save(directory + 'lim.npy', lim_complete)
+        os.makedirs(config.path.processed, exist_ok=True)
+        fname = kwargs.pop('fname')
+        np.save(config.path.processed + fname + '.npy', array_complete)
 
-        np.save(directory + 'bpz.npy', bpz_complete)
-        np.save(directory + 'name.npy', name_complete)
-        np.save(directory + 'mag_0.npy', mag_0_complete)
-        np.save(directory + 'weight.npy', weight_complete)
+    return array_complete
+
+
+def simple_cleaning(config: ConfigDict):
+    """Extract the important columns to a folder.
+
+    Args:
+        config (ConfigDict): the main configuration file.
+    """
+    # multiple columns (9 bands) in the catalogue
+    extract_column('MAG_GAAP', config, True, fname='mag')
+    extract_column('MAGERR_GAAP', config, True, fname='mag_err')
+    extract_column('FLUX_GAAP', config, True, fname='flux')
+    extract_column('FLUXERR_GAAP', config, True, fname='flux_err')
+    extract_column('EXTINCTION', config, True, fname='ex')
+    extract_column('MAG_LIM', config, True, fname='lim')
+
+    # for these ones, we have a single column in the catalogue
+    extract_column('Z_B', config, True, fname='bpz')
+    extract_column('THELI_NAME', config, True, fname='name')
+    extract_column('MAG_AUTO', config, True, fname='mag_0')
+    extract_column('recal_weight', config, True, fname='weight')

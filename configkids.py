@@ -32,7 +32,7 @@ def get_config() -> ConfigDict:
     conf.cat = ['9', 'S', '23', '15', '12']
     conf.catnames = [f'KV450_G{c}_reweight_3x4x4_v2_good.cat' for c in conf.cat]
 
-    # columns in the data
+    # columns in the data (to remove afterwards)
     conf.cols = cols = ConfigDict()
     cols.mag = [f'MAG_GAAP_{b}' for b in conf.bands]
     cols.mag_err = [f'MAGERR_GAAP_{b}' for b in conf.bands]
@@ -48,8 +48,8 @@ def get_config() -> ConfigDict:
 
     # paths
     conf.path = path = ConfigDict()
-    path.data = 'data/kids_1/'
-    path.output = 'output/kids_1/'
+    path.processed = 'data/processed/'
+    path.output = 'output/kids/'
     path.filter = 'filters/'
     path.sed = 'sed/'
 
