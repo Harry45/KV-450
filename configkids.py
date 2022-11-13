@@ -32,15 +32,6 @@ def get_config() -> ConfigDict:
     conf.cat = ['9', 'S', '23', '15', '12']
     conf.catnames = [f'KV450_G{c}_reweight_3x4x4_v2_good.cat' for c in conf.cat]
 
-    # columns in the data (to remove afterwards)
-    conf.cols = cols = ConfigDict()
-    cols.mag = [f'MAG_GAAP_{b}' for b in conf.bands]
-    cols.mag_err = [f'MAGERR_GAAP_{b}' for b in conf.bands]
-    cols.flux = [f'FLUX_GAAP_{b}' for b in conf.bands]
-    cols.flux_err = [f'FLUXERR_GAAP_{b}' for b in conf.bands]
-    cols.ext = [f'EXTINCTION_{b}' for b in conf.bands]
-    cols.mag_lim = [f'MAG_LIM_{b}' for b in conf.bands]
-
     # fixed numbers
     conf.ntomo = 1
     conf.eps = 1E-300
@@ -48,15 +39,11 @@ def get_config() -> ConfigDict:
 
     # paths
     conf.path = path = ConfigDict()
-    path.processed = 'data/processed/'
-    path.output = 'output/kids/'
+    path.processed = 'data/processed/kv/'
+    path.split = 'data/splits/kv/'
+    path.output = 'output/kv/'
     path.filter = 'filters/'
     path.sed = 'sed/'
-
-    # filenames (for the outputs)
-    conf.fnames = fnames = ConfigDict()
-    fnames.fluxcorr = 'fluxcorr'
-    fnames.fluxcorr_err = 'fluxcorr_err'
 
     # redshift configurations
     conf.redshift = redshift = ConfigDict()
