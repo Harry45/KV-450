@@ -39,6 +39,7 @@ def get_config() -> ConfigDict:
 
     # paths
     conf.path = path = ConfigDict()
+    path.catalogue = 'data/catalogue/'
     path.processed = 'data/processed/kv/'
     path.split = 'data/splits/kv/'
     path.output = 'output/kv/'

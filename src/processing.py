@@ -11,7 +11,7 @@ from astropy.io import fits
 import numpy as np
 
 
-def extract_column(col: str, config: ConfigDict, save: bool = False, **kwargs) -> np.ndarray:
+def extract_column_bands(col: str, config: ConfigDict, save: bool = False, **kwargs) -> np.ndarray:
     """Extract the different columns and save them to a file in the folder data/processed/. Important columns are:
 
     9 columns (9 bands)
@@ -23,6 +23,35 @@ def extract_column(col: str, config: ConfigDict, save: bool = False, **kwargs) -
     - EXTINCTION
     - MAG_LIM
 
+    Args:
+        col (str): name of the column to combine
+        config (ConfigDict): a configuration file containing the configurations
+        save (bool, optional): save the file to output. Defaults to False.
+    Returns:
+        np.ndarray: the array of values
+    """
+    colname = [f'{col}_{b}' for b in config.bands]
+    array_complete = list()
+    for cat in config.catnames:
+        fits_file = fits.open(config.path.catalogue + cat, memmap=True)
+        data = fits_file[1].data
+
+        flag = data['GAAP_Flag_ugriZYJHKs']
+        arr = np.asarray([data[c] for c in colname]).T
+        array_complete.append(arr[flag == 0])
+    array_complete = np.concatenate(array_complete, axis=0)
+
+    if save:
+        os.makedirs(config.path.processed, exist_ok=True)
+        fname = kwargs.pop('fname')
+        np.save(config.path.processed + fname + '.npy', array_complete)
+
+    return array_complete
+
+
+def extract_column_single(col: str, config: ConfigDict, save: bool = False, **kwargs) -> np.ndarray:
+    """_summary_
+
     Only one column
     ---------------
     - Z_B
@@ -33,30 +62,20 @@ def extract_column(col: str, config: ConfigDict, save: bool = False, **kwargs) -
     Args:
         col (str): name of the column to combine
         config (ConfigDict): a configuration file containing the configurations
-        save (bool, optional): _description_. Defaults to False.
+        save (bool, optional): save the file to output. Defaults to False.
+    Returns:
+        np.ndarray: the array of values
     """
+
     array_complete = list()
-    for cat in range(config.catnames):
-        fits_file = fits.open(cat, memmap=True)
+    for cat in config.catnames:
+        fits_file = fits.open(config.path.catalogue + cat, memmap=True)
         data = fits_file[1].data
 
-        # identify the flags in the data
         flag = data['GAAP_Flag_ugriZYJHKs']
-
-        # find the names of the columns
-        names = np.array(data.names)
-        columns = names[[names[i].startswith(col) for i in range(len(names))]]
-
-        if len(columns) > 1:
-            colname = [f'{col}_{b}' for b in config.bands]
-            arr = np.asarray([data[c] for c in colname]).T
-        else:
-            arr = data[col]
+        arr = data[col]
         array_complete.append(arr[flag == 0])
-    if len(columns) > 1:
-        array_complete = np.concatenate(array_complete, axis=0)
-    else:
-        array_complete = np.array(array_complete)
+    array_complete = np.concatenate(array_complete)
 
     if save:
         os.makedirs(config.path.processed, exist_ok=True)
@@ -73,15 +92,15 @@ def simple_cleaning(config: ConfigDict):
         config (ConfigDict): the main configuration file.
     """
     # multiple columns (9 bands) in the catalogue
-    extract_column('MAG_GAAP', config, True, fname='mag')
-    extract_column('MAGERR_GAAP', config, True, fname='mag_err')
-    extract_column('FLUX_GAAP', config, True, fname='flux')
-    extract_column('FLUXERR_GAAP', config, True, fname='flux_err')
-    extract_column('EXTINCTION', config, True, fname='ex')
-    extract_column('MAG_LIM', config, True, fname='lim')
+    # _ = extract_column_bands('MAG_GAAP', config, True, fname='mag')
+    # _ = extract_column_bands('MAGERR_GAAP', config, True, fname='mag_err')
+    # _ = extract_column_bands('FLUX_GAAP', config, True, fname='flux')
+    # _ = extract_column_bands('FLUXERR_GAAP', config, True, fname='flux_err')
+    # _ = extract_column_bands('EXTINCTION', config, True, fname='ex')
+    # _ = extract_column_bands('MAG_LIM', config, True, fname='lim')
 
     # for these ones, we have a single column in the catalogue
-    extract_column('Z_B', config, True, fname='bpz')
-    extract_column('THELI_NAME', config, True, fname='name')
-    extract_column('MAG_AUTO', config, True, fname='mag_0')
-    extract_column('recal_weight', config, True, fname='weight')
+    # _ = extract_column_single('Z_B', config, True, fname='bpz')
+    # _ = extract_column_single('THELI_NAME', config, True, fname='name')
+    # _ = extract_column_single('MAG_AUTO', config, True, fname='mag_0')
+    # _ = extract_column_single('recal_weight', config, True, fname='weight')

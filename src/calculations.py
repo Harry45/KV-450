@@ -28,16 +28,25 @@ def calculate_offset(config: ConfigDict):
 
     for n in unique_name:
 
-        mag_sel = magnitude[name == n]
-        flu_sel = flux[name == n]
+        idx_name = name == n
+        mag_sel = magnitude[idx_name]
+        flu_sel = flux[idx_name]
 
         for j in range(config.nband):
-            mag_sel = mag_sel[mag_sel[:, j] != 99]
-            flu_sel = flu_sel[mag_sel[:, j] != 99]
+            idx = mag_sel[:, j] != 99
+            mag_sel = mag_sel[idx]
+            flu_sel = flu_sel[idx]
+
+        # this has been added by me
+        # -------------------------------
+        flu_sel[flu_sel <= 0] = 1E-10
+        # -------------------------------
 
         offset_individual = mag_sel + 2.5 * np.log10(flu_sel)
-        offset_median = np.mean(offset_individual, axis=0)
-        offset[name == n] *= offset_median
+
+        if offset_individual.shape[0] >= 1:
+            offset_median = np.mean(offset_individual, axis=0)
+            offset[idx_name] *= offset_median
 
     # save the calculations
     np.save(config.path.processed + 'offset.npy', offset)
