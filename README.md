@@ -23,7 +23,7 @@ Analysis of the KV-450 cosmological data with the new redshift distributions dev
 -   We should pass the configuration file to the function as follows:
 
 ```
-python main --config=configkids.py
+python main.py --config=configkids.py
 ```
 
 ## Experiments
