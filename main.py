@@ -23,8 +23,8 @@ def main(argv):
     """
 
     # simple_cleaning(FLAGS.config)
-    calculate_offset(FLAGS.config)
-    # correct_flux(FLAGS.config)
+    # calculate_offset(FLAGS.config)
+    correct_flux(FLAGS.config)
 
 
 if __name__ == "__main__":

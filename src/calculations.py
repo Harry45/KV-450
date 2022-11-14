@@ -64,20 +64,27 @@ def correct_flux(config: ConfigDict):
     flux_err = np.load(config.path.processed + 'flux_err.npy')
     ext = np.load(config.path.processed + 'ex.npy')
 
+    print(np.amin(flux))
+    print(np.amax(flux))
+
     # these are calculated in the previous function
-    offset = np.load(config.path.calculation + 'offset.npy')
+    offset = np.load(config.path.processed + 'offset.npy')
 
-    # apply extinction
-    flux = flux * 10**(0.4 * ext)
-    flux_err = flux_err * 10**(0.4 * ext)
+    # # apply extinction
+    # flux = flux * 10**(0.4 * ext)
+    # flux_err = flux_err * 10**(0.4 * ext)
 
-    # correct for offset
-    flux = flux * 10**(-0.4 * offset)
-    flux_err = flux_err * 10**(-0.4 * offset)
+    # # correct for offset
+    # flux = flux * 10**(-0.4 * offset)
+    # flux_err = flux_err * 10**(-0.4 * offset)
 
-    # save the calculations
-    np.save(config.path.processed + 'fluxcorr.npy', flux)
-    np.save(config.path.processed + 'fluxcorr_err.npy', flux_err)
+    print(np.amin(ext))
+    print(np.amax(ext))
+    print(np.amin(offset))
+    print(np.amax(offset))
+    # # save the calculations
+    # np.save(config.path.processed + 'fluxcorr.npy', flux)
+    # np.save(config.path.processed + 'fluxcorr_err.npy', flux_err)
 
 
 def correct_magnitude(config: ConfigDict):
