@@ -64,24 +64,33 @@ def correct_flux(config: ConfigDict):
     flux_err = np.load(config.path.processed + 'flux_err.npy')
     ext = np.load(config.path.processed + 'ex.npy')
 
-    print(np.amin(flux))
-    print(np.amax(flux))
+    print(f'Minimum value of flux is {np.amin(flux):.2e}')
+    print(f'Maximum value of flux is {np.amax(flux):.2e}')
+
+    index = np.all(flux <= 1E20, axis=1)
+
+    print(f'Minimum value of Extinction is {np.amin(ext):.2e}')
+    print(f'Maximum value of Extinction is {np.amax(ext):.2e}')
 
     # these are calculated in the previous function
     offset = np.load(config.path.processed + 'offset.npy')
 
+    print(f'Minimum value of Offset is {np.amin(offset):.2e}')
+    print(f'Maximum value of Offset is {np.amax(offset):.2e}')
+
+    diff = ext - offset
+
+    print(f'Minimum value of difference (extinction - offset) is {np.amin(diff):.2e}')
+    print(f'Maximum value of difference (extinction - offset) is {np.amax(diff):.2e}')
+
     # # apply extinction
-    # flux = flux * 10**(0.4 * ext)
-    # flux_err = flux_err * 10**(0.4 * ext)
+    # flux = flux[index] * 10**(0.4 * ext[index])
+    # flux_err = flux_err[index] * 10**(0.4 * ext[index])
 
     # # correct for offset
     # flux = flux * 10**(-0.4 * offset)
     # flux_err = flux_err * 10**(-0.4 * offset)
 
-    print(np.amin(ext))
-    print(np.amax(ext))
-    print(np.amin(offset))
-    print(np.amax(offset))
     # # save the calculations
     # np.save(config.path.processed + 'fluxcorr.npy', flux)
     # np.save(config.path.processed + 'fluxcorr_err.npy', flux_err)

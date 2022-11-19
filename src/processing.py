@@ -92,15 +92,15 @@ def simple_cleaning(config: ConfigDict):
         config (ConfigDict): the main configuration file.
     """
     # multiple columns (9 bands) in the catalogue
-    # _ = extract_column_bands('MAG_GAAP', config, True, fname='mag')
-    # _ = extract_column_bands('MAGERR_GAAP', config, True, fname='mag_err')
-    # _ = extract_column_bands('FLUX_GAAP', config, True, fname='flux')
-    # _ = extract_column_bands('FLUXERR_GAAP', config, True, fname='flux_err')
-    # _ = extract_column_bands('EXTINCTION', config, True, fname='ex')
-    # _ = extract_column_bands('MAG_LIM', config, True, fname='lim')
+    extract_column_bands('MAG_GAAP', config, True, fname='mag')
+    extract_column_bands('MAGERR_GAAP', config, True, fname='mag_err')
+    extract_column_bands('FLUX_GAAP', config, True, fname='flux')
+    extract_column_bands('FLUXERR_GAAP', config, True, fname='flux_err')
+    extract_column_bands('EXTINCTION', config, True, fname='ex')
+    extract_column_bands('MAG_LIM', config, True, fname='lim')
 
     # for these ones, we have a single column in the catalogue
-    # _ = extract_column_single('Z_B', config, True, fname='bpz')
-    # _ = extract_column_single('THELI_NAME', config, True, fname='name')
-    # _ = extract_column_single('MAG_AUTO', config, True, fname='mag_0')
-    # _ = extract_column_single('recal_weight', config, True, fname='weight')
+    extract_column_single('Z_B', config, True, fname='bpz')
+    extract_column_single('THELI_NAME', config, True, fname='name')
+    extract_column_single('MAG_AUTO', config, True, fname='mag_0')
+    extract_column_single('recal_weight', config, True, fname='weight')
