@@ -9,7 +9,7 @@ Script: Contains the main code for sampling the posterior using MPI
 import numpy as np
 from mpi4py import MPI
 
-# paralell processing
+# parallel processing
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
 rank = comm.Get_rank()

@@ -21,11 +21,11 @@ def get_config() -> ConfigDict:
     conf = ConfigDict()
 
     # filters
-    conf.filters = ['u', 'g', 'r', 'i', 'Z2', 'Y', 'J', 'H', 'Ks']
+    conf.filters = ['u', 'g', 'r', 'i', 'Z2', 'Y', 'J', 'H', 'K']
     conf.filterlist = [f'KiDSVIKING_{f}.res' for f in conf.filters]
 
     # bands
-    conf.bands = ['u', 'g', 'r', 'i', 'Z', 'Y', 'J', 'H', 'Ks']
+    conf.bands = ['u', 'g', 'r', 'i', 'Z', 'Y', 'J', 'H', 'K']
     conf.nband = len(conf.filters)
 
     # catalogue

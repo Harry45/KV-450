@@ -25,4 +25,7 @@ resume_number = p_int[23]
 m1 = np.arange(mlist[0], mlist[1]+3*mlist[2], mlist[2])
 m2 = np.arange(mlist[0], mlist[1]+2*mlist[3], mlist[3])
 
-print(zlist[3])
+print(zlist)
+z1 = np.round(np.arange(zlist[0],zlist[1]+(3*zlist[2]),zlist[2]),5)
+
+print(z1)
