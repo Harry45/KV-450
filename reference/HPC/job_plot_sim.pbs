@@ -1,0 +1,13 @@
+## Amount of time and number of nodes/cores/memory
+#PBS -l walltime=05:00:00
+#PBS -l select=1:ncpus=1:mem=96gb
+
+## Load relevent modules
+
+module load anaconda3/personal
+
+## Move to Folder
+cd $CX2_SCRATCH2/Photo_Z
+
+## Run paralell programed code
+python Plot_sim.py --p param_sim.txt

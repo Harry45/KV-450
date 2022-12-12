@@ -1,0 +1,70 @@
+# List all Paths and Parameters 
+# Input into code using mpiexec -np 4 
+#                               python Nz.py
+#                               --p param.txt
+
+
+## PATHS
+# data path 
+/rds/general/user/gk1513/home/SCRATCH/cx2-scratch2/Photo_Z_3D/SIMULATION_DATA/split/1
+# output path
+/rds/general/user/gk1513/ephemeral/the_100000_test/simulation/1
+# filter path 
+../FILTER
+# template path
+../SED
+# template list folder
+../TEMPLATE_LIST
+# filter list folder
+../FILTER_LIST
+
+## FILE NAMES 
+# mag file
+sim_flux.npy
+# error data
+sim_fluxe.npy
+# filter list
+KiDSVICKING.list
+# template list
+test2.list
+
+## PARAMETERS 
+# zmin,zmax,zfine,z(m)
+0.0 3.0 0.01 0.05 0.05 0.05 0.05 0.05 0.05
+# mmin mmax mfine m
+19 25 0.1 1
+# refference filter
+2
+# number of sources
+100000
+# number of samples
+1000000
+# size of sample chuncks 
+1000
+# number of likelihood chuncks
+1
+# number of chains
+1
+
+## PARTS OF CODE TO RUN
+# likelihood
+True
+# samples
+True
+# resuming samples
+False
+# weights
+True
+# random
+False
+# sample number to resume 
+99000
+
+
+## POST PARAMETERS
+# minimum samples
+1000
+# maximum samples
+100000
+# paralel number
+48
