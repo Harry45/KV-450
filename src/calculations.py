@@ -126,13 +126,16 @@ def split_file(config: ConfigDict, filelist: list):
         config (ConfigDict): the main configuration file for KV-450.
         filelist (list): names of the files to be split
 
-    files
-    -----
-    - bpz
+    Mandatory filenames
+    -------------------
     - fluxcorr
     - fluxcorr_err
     - weight
     """
+    assert 'fluxcorr' in filelist, 'Missing corrected flux: fluxcorr'
+    assert 'fluxcorr_err' in filelist, 'Missing corrected error flux: fluxcorr_err'
+    assert 'weight' in filelist, 'Missing weight: weight'
+
     os.makedirs(config.path.split, exist_ok=True)
     bpz = np.load(config.path.processed + 'bpz.npy')
     nsources = len(bpz)
