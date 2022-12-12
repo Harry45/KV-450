@@ -29,3 +29,12 @@ print(zlist)
 z1 = np.round(np.arange(zlist[0],zlist[1]+(3*zlist[2]),zlist[2]),5)
 
 print(z1)
+
+# from mpi4py import MPI
+
+# # parallel processing
+# comm = MPI.COMM_WORLD
+# size = comm.Get_size()
+# rank = comm.Get_rank()
+
+# print(size)
