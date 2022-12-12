@@ -83,17 +83,17 @@ def correct_flux(config: ConfigDict):
     print(f'Minimum value of difference (extinction - offset) is {np.amin(diff):.2e}')
     print(f'Maximum value of difference (extinction - offset) is {np.amax(diff):.2e}')
 
-    # # apply extinction
-    # flux = flux[index] * 10**(0.4 * ext[index])
-    # flux_err = flux_err[index] * 10**(0.4 * ext[index])
+    # apply extinction
+    flux = flux[index] * 10**(0.4 * ext[index])
+    flux_err = flux_err[index] * 10**(0.4 * ext[index])
 
-    # # correct for offset
-    # flux = flux * 10**(-0.4 * offset)
-    # flux_err = flux_err * 10**(-0.4 * offset)
+    # correct for offset
+    flux = flux * 10**(-0.4 * offset)
+    flux_err = flux_err * 10**(-0.4 * offset)
 
-    # # save the calculations
-    # np.save(config.path.processed + 'fluxcorr.npy', flux)
-    # np.save(config.path.processed + 'fluxcorr_err.npy', flux_err)
+    # save the calculations
+    np.save(config.path.processed + 'fluxcorr.npy', flux)
+    np.save(config.path.processed + 'fluxcorr_err.npy', flux_err)
 
 
 def correct_magnitude(config: ConfigDict):
@@ -142,6 +142,6 @@ def split_file(config: ConfigDict, filelist: list):
         # load file and shuffle it
         file = np.load(config.path.processed + f'{fname}.npy')[index]
         filesplit = np.array_split(file, 5, axis=0)
-        for s in range(5):
-            splitname = f'{config.path.split}split_{s}/{fname}'
-            np.save(splitname + '.npy', filesplit[s][0:100000])
+        for split in range(5):
+            splitname = f'{config.path.split}split_{split}/{fname}'
+            np.save(splitname + '.npy', filesplit[split][0:100000])
