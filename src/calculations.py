@@ -26,9 +26,9 @@ def calculate_offset(config: ConfigDict):
     offset = np.ones_like(flux)
     unique_name = np.unique(name)
 
-    for n in unique_name:
+    for uname in unique_name:
 
-        idx_name = name == n
+        idx_name = name == uname
         mag_sel = magnitude[idx_name]
         flu_sel = flux[idx_name]
 
