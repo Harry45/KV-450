@@ -11,7 +11,7 @@ from ml_collections.config_flags import config_flags
 
 # our scripts
 from src.processing import simple_cleaning
-from src.calculations import calculate_offset, correct_flux
+from src.calculations import calculate_offset, correct_flux, split_file
 
 FLAGS = flags.FLAGS
 config_flags.DEFINE_config_file("config", None, "Training configuration.", lock_config=True)
@@ -24,7 +24,8 @@ def main(argv):
 
     # simple_cleaning(FLAGS.config)
     # calculate_offset(FLAGS.config)
-    correct_flux(FLAGS.config)
+    # correct_flux(FLAGS.config)
+    split_file(FLAGS.config, ['fluxcorr', 'fluxcorr_err', 'weight'])
 
 
 if __name__ == "__main__":

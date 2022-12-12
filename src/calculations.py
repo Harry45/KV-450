@@ -146,5 +146,6 @@ def split_file(config: ConfigDict, filelist: list):
         file = np.load(config.path.processed + f'{fname}.npy')[index]
         filesplit = np.array_split(file, 5, axis=0)
         for split in range(5):
-            splitname = f'{config.path.split}split_{split}/{fname}'
-            np.save(splitname + '.npy', filesplit[split][0:100000])
+            path = f'{config.path.split}split_{split}/'
+            os.makedirs(path, exist_ok=True)
+            np.save(path + fname + '.npy', filesplit[split][0:config.fixed.nsources])
