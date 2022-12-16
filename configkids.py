@@ -44,7 +44,7 @@ def get_config() -> ConfigDict:
     path.split = 'data/splits/kv/'
     path.output = 'output/kv/'
     path.filter = 'filters/'
-    path.sed = 'sed/'
+    path.templates = 'templates/'
 
     # redshift configurations
     conf.redshift = redshift = ConfigDict()

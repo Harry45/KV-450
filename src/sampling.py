@@ -5,7 +5,9 @@ Date: November 2022
 Project: KiDS+VIKING-450 cosmology with Bayesian hierarchical model redshift distributions
 Script: Contains the main code for sampling the posterior using MPI
 """
-
+import time
+import gc
+from tqdm import tqdm
 import numpy as np
 from mpi4py import MPI
 
@@ -47,14 +49,8 @@ template_names = sub_comm.scatter(template_names, root=0)
 # removes a few functions that dont work on HPC
 HPC = False
 
-if not HPC:
-    import time
-    import gc
-    from tqdm import tqdm
-    #import getdist
-    #import getdist.plots as pt
-    if rank == 0:
-        total_time_start = time.time()
+if not HPC and rank == 0:
+    total_time_start = time.time()
 
 # MAIN CODE
 
