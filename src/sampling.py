@@ -8,17 +8,41 @@ Script: Contains the main code for sampling the posterior using MPI
 import time
 import gc
 from tqdm import tqdm
+
+import os
 import numpy as np
 from mpi4py import MPI
+from ml_collections import ConfigDict
 
-# parallel processing
-comm = MPI.COMM_WORLD
-size = comm.Get_size()
-rank = comm.Get_rank()
+
+def generate_samples(config: ConfigDict):
+
+    ntemplate = 0
+    colour = 1
+    template_names = None
+
+    if RANK == 0:
+        temp_path = os.path.join(config.template.list, config.template.choice)
+        template_names = np.loadtxt(temp_path, dtype=str)
+        ntemplate = len(template_names)
+        if ntemplate > SIZE:
+            template_names = np.array_split(template_names, SIZE, axis=0)
+        else:
+            template_names = np.array_split(template_names, ntemplate, axis=0)
+
+    ntemplate = COMM.bcast(ntemplate, root=0)
+
+    if RANK < ntemplate:
+        colour = 0
+
+    sub_comm = COMM.Split(colour, RANK)
+    template_names = sub_comm.scatter(template_names, root=0)
+
+    return template_names, ntemplate, colour
 
 
 # load filters
-filters = np.loadtxt('{}/{}'.format(filter_list_folder, filter_list), dtype=str)
+# filters = np.loadtxt('{}/{}'.format(filter_list_folder, filter_list), dtype=str)
 
 # load templates
 nt = 0
@@ -32,6 +56,7 @@ if rank == 0:
         template_names = np.array_split(template_names_full, size, axis=0)
     else:
         template_names = np.array_split(template_names_full, nt, axis=0)
+
 
 nt = comm.bcast(nt, root=0)
 if rank < nt:
@@ -52,6 +77,7 @@ HPC = False
 if not HPC and rank == 0:
     total_time_start = time.time()
 
+"""
 # MAIN CODE
 
 for files_number in range(number_of_tomograthic_bins):
@@ -250,10 +276,10 @@ for files_number in range(number_of_tomograthic_bins):
                     else:
                         nbs = np.concatenate(
                             [nbs, big_sampler(bpz_like_ztm_chunk, hbs)])
-                        #nbs += big_sampler(bpz_like_ztm_chunk,hbs)
+                        # nbs += big_sampler(bpz_like_ztm_chunk,hbs)
 
                 # sum bincounts from all cores
-                #nbs_all = comm.reduce(nbs, op=MPI.SUM, root=0)
+                # nbs_all = comm.reduce(nbs, op=MPI.SUM, root=0)
                 nbs_all = comm.gather(nbs, root=0)
                 nbs = None
                 if rank == 0:
@@ -277,11 +303,11 @@ for files_number in range(number_of_tomograthic_bins):
                         nbs_all, bins=np.arange(nbins+1))[0]
                     nbs_all = None
                     nbs_hist = nbs_hist.astype(float) + prior
-                    #nbs_all = nbs_all.astype(float)
-                    #nbs_all += prior
+                    # nbs_all = nbs_all.astype(float)
+                    # nbs_all += prior
 
                     hbs = np.random.dirichlet(nbs_hist, 1)
-                    #hbs = distribution_average(hbs[0],zlist,mlist,t1,running_mean_general_convol,[1.,20.,1.])
+                    # hbs = distribution_average(hbs[0],zlist,mlist,t1,running_mean_general_convol,[1.,20.,1.])
                 nbs_all = None
                 hbs = comm.bcast(hbs, root=0)
                 if not HPC:
@@ -309,3 +335,4 @@ if not HPC:
         total_time_end = time.time()
 
         print('Total Time =', float(total_time_end-total_time_start), flush=True)
+"""

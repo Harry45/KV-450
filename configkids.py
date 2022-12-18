@@ -20,22 +20,35 @@ def get_config() -> ConfigDict:
 
     conf = ConfigDict()
 
-    # filters
-    conf.filters = ['u', 'g', 'r', 'i', 'Z2', 'Y', 'J', 'H', 'K']
-    conf.filterlist = [f'KiDSVIKING_{f}.res' for f in conf.filters]
-
     # bands
     conf.bands = ['u', 'g', 'r', 'i', 'Z', 'Y', 'J', 'H', 'K']
-    conf.nband = len(conf.filters)
+    conf.nband = len(conf.bands)
 
     # catalogue
     conf.cat = ['9', 'S', '23', '15', '12']
     conf.catnames = [f'KV450_G{c}_reweight_3x4x4_v2_good.cat' for c in conf.cat]
 
+    # filters
+    conf.filters = filters = ConfigDict()
+    filters.types = ['u', 'g', 'r', 'i', 'Z2', 'Y', 'J', 'H', 'K']
+    filters.names = [f'KiDSVIKING_{f}.res' for f in filters.types]
+    filters.path = 'filters/'
+    filters.nfilter = len(filters.types)
+
+    # templates
+    conf.template = template = ConfigDict()
+    template.path = 'templates/'
+    template.list = 'templatelist/'
+    template.choice = 'PCA.list'
+
     # fixed numbers
     conf.ntomo = 1
     conf.eps = 1E-300
     conf.logeps = np.log(conf.eps)
+    conf.lambdaref = 4500
+    conf.parsec = 3E18
+    conf.split = 0
+    conf.nsplit = 1
 
     # paths
     conf.path = path = ConfigDict()
@@ -43,13 +56,12 @@ def get_config() -> ConfigDict:
     path.processed = 'data/processed/kv/'
     path.split = 'data/splits/kv/'
     path.output = 'output/kv/'
-    path.filter = 'filters/'
-    path.templates = 'templates/'
 
     # redshift configurations
     conf.redshift = redshift = ConfigDict()
     redshift.zmin = 0.0
     redshift.zmax = 3.0
+    redshift.zfine = 0.01
     redshift.zstep = 0.05
     redshift.zlist = [0.05] * 6
 
@@ -83,4 +95,5 @@ def get_config() -> ConfigDict:
     boolean.resume = False
     boolean.weights = True
     boolean.random = False
+    boolean.hpc = False
     return conf

@@ -22,12 +22,12 @@ def luminosity_distance(redshift: np.ndarray) -> np.ndarray:
     return np.exp(30.5 * redshift**0.04 - 21.7)
 
 
-def likelihood_ztm(data: np.ndarray, var: np.ndarray, mod: np.ndarray, config: ConfigDict) -> np.ndarray:
+def likelihood_ztm(data: np.ndarray, sigma: np.ndarray, mod: np.ndarray, config: ConfigDict) -> np.ndarray:
     """Calculates the likelihood.
 
     Args:
         data (np.ndarray): the input data
-        var (np.ndarray): the variance
+        sigma (np.ndarray): the variance
         mod (np.ndarray): the model (the mean)
         config (ConfigDict): a set of configurations
 
@@ -35,8 +35,8 @@ def likelihood_ztm(data: np.ndarray, var: np.ndarray, mod: np.ndarray, config: C
         np.ndarray: _description_
     """
 
-    var = np.diag(1. / var)
-    chi2 = (np.dot((data - mod), var**2) * (data - mod)).sum(-1)
+    fisher = np.diag(1. / sigma**2)
+    chi2 = (np.dot((data - mod), fisher) * (data - mod)).sum(-1)
     like = np.exp(-0.5 * np.clip((chi2 - np.min(chi2)), 0., -2 * config.logeps))
     if np.isnan(like[0, 0, 0]):
         like = np.ones_like(like)
@@ -58,12 +58,12 @@ def likelihood_integration(like: np.ndarray, trange: np.ndarray, config: ConfigD
 
     # setting up the range for the magnitude and redshift
     magmax1 = config.mag.max + 3 * config.mag.finedelta
-    magmax2 = config.mag.max + 3 * config.mag.delta
-    redmax = config.redshift.max + 3 * config.redshift.zstep
+    magmax2 = config.mag.max + 2 * config.mag.delta
+    redmax = config.redshift.zmax + 3 * config.redshift.zfine
 
     mag1 = np.arange(config.mag.min, magmax1, config.mag.finedelta)
     mag2 = np.arange(config.mag.min, magmax2, config.mag.delta)
-    redshifts = np.arange(config.redshift.min, redmax, config.redshift.zstep)
+    redshifts = np.arange(config.redshift.zmin, redmax, config.redshift.zfine)
 
     like_reduced1 = np.zeros((len(mag2) - 2, len(trange), len(redshifts)))
 
@@ -73,8 +73,8 @@ def likelihood_integration(like: np.ndarray, trange: np.ndarray, config: ConfigD
         like_reduced1[i, :, :] = np.mean(like[idx, :, :], axis=0)
 
     for j in range(len(mag2) - 2):
-        zmax = config.redshift.max + 2 * config.reshift.zlist[j]
-        red = np.arange(config.redshift.min, zmax, config.reshift.zlist[j])
+        zmax = config.redshift.zmax + 2 * config.redshift.zlist[j]
+        red = np.arange(config.redshift.zmin, zmax, config.redshift.zlist[j])
         like_reduced3 = np.zeros((len(trange), len(red) - 2))
 
         for i in range(len(red) - 2):
@@ -97,7 +97,7 @@ def model_zt_to_ztm(model: np.ndarray, mgrid: np.ndarray) -> np.ndarray:
     Returns:
         np.ndarray: the model related to redshift and template only.
     """
-    fgrid = 10.**(-.4 * mgrid)
+    fgrid = 10.0**(-0.4 * mgrid)
     model /= model[:, :, 2][:, :, None]
     model = np.outer(model, fgrid).reshape((model.shape[0], model.shape[1], model.shape[2], len(fgrid)))
     model = np.swapaxes(model, 2, 3)
@@ -159,7 +159,8 @@ def nbins_calculator(trange: np.ndarray, config: ConfigDict) -> int:
     Returns:
         int: the number of bins
     """
-    mag = np.arange(config.mag.min, config.mag.max + (2 * config.mag.delta), config.mag.delta)[:-2]
+    magmax = config.mag.max + (2 * config.mag.delta)
+    mag = np.arange(config.mag.min, magmax, config.mag.delta)[:-2]
     total_z = 0
     for i in range(len(mag)):
         zmax = config.redshift.zmax + (2 * config.redshift.zlist[i])
