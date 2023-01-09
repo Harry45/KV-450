@@ -104,7 +104,7 @@ def model_zt_to_ztm(model: np.ndarray, mgrid: np.ndarray) -> np.ndarray:
     return model
 
 
-def big_sampler(likelihood: np.ndarray, dirichletsamples: np.ndarray, nbins: int) -> list:
+def big_sampler(likelihood: np.ndarray, dirichletsamples: np.ndarray, nbins: int) -> np.ndarray:
     """The big sampler
 
     Args:
@@ -113,11 +113,18 @@ def big_sampler(likelihood: np.ndarray, dirichletsamples: np.ndarray, nbins: int
         nbins (int): number of bins
 
     Returns:
-        list: a list of random bins
+        np.ndarray: an array of random bins
     """
     prod = likelihood * dirichletsamples
-    prod /= np.sum(prod, axis=1)[:, None]
+
+    # some pre-processing
+    prod[~np.isfinite(prod)] = 1E-10
+    prod[prod == 0.0] = 1E-10
+
+    tot = np.sum(prod, axis=1)[:, None]
+    prod = prod / tot
     x_point = [np.random.choice(np.arange(nbins), p=i) for i in prod]
+    x_point = np.asarray(x_point)
     return x_point
 
 
@@ -133,16 +140,16 @@ def prior_maker(nbins: int, trange: np.ndarray, config: ConfigDict) -> np.ndarra
         np.ndarray: the prior
     """
     prior = np.ones(nbins)
-    zmax = config.redshift.max + 2 * config.redshift.zlist[0]
+    zmax = config.redshift.zmax + 2 * config.redshift.zlist[0]
     magmax = config.mag.max + 2 * config.mag.delta
 
-    redshifts = np.arange(config.redshift.min, zmax, config.redshift.zlist[0])[:-2]
+    redshifts = np.arange(config.redshift.zmin, zmax, config.redshift.zlist[0])[:-2]
     mag = np.arange(config.mag.min, magmax, config.mag.delta)[:-2]
 
     total_z = 0
     for i in range(len(mag)):
-        maxz = config.redshift.max + 2 * config.redshift.zlist[i]
-        zrange = np.arange(config.redshift.min, maxz, config.redshift.zlist[i])
+        maxz = config.redshift.zmax + 2 * config.redshift.zlist[i]
+        zrange = np.arange(config.redshift.zmin, maxz, config.redshift.zlist[i])
         total_z2 = total_z + len(zrange) - 2
         prior[(len(trange) * total_z): (total_z2 * len(trange))] = zrange[1] / redshifts[1]
         total_z = total_z2

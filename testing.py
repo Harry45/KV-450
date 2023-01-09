@@ -9,6 +9,7 @@ from mpi4py import MPI
 
 from src.bhm import luminosity_distance, model_zt_to_ztm
 from src.bhm import nbins_calculator, likelihood_ztm, likelihood_integration
+from src.bhm import prior_maker, big_sampler
 
 FLAGS = flags.FLAGS
 config_flags.DEFINE_config_file("config", None, "Training configuration.", lock_config=True)
@@ -105,16 +106,42 @@ def calculate_fmod(cfg: ConfigDict):
 def calculate_likelihood(cfg: ConfigDict):
 
     f_obs, f_obs_err = load_observations(cfg)
-    f_mod, model_ztm, record = calculate_fmod(cfg)
-
     nobj = f_obs.shape[0]
-    nbins = nbins_calculator(record['temp_index'], cfg)
-    likelihood = np.zeros((nobj, nbins))
-    for i in range(10):
+    print(f'Number of objects is {nobj}')
 
+    _, model_ztm, record = calculate_fmod(cfg)
+    nbins = nbins_calculator(record['temp_index'], cfg)
+    print(f'Number of bins is {nbins}')
+
+    # calculate the likelihood value
+    likelihood = np.zeros((nobj, nbins), dtype=np.float16)
+    for i in range(2):
         like_i = likelihood_ztm(f_obs[i], f_obs_err[i], model_ztm, cfg)
         like_i = np.swapaxes(like_i, 2, 0)
         likelihood[i] = likelihood_integration(like_i, record['temp_index'], cfg)
+
+    # save the likelihood output
+    os.makedirs(cfg.path.output, exist_ok=True)
+    path = os.path.join(cfg.path.output, f'likelihood_file_{cfg.split}.npy')
+    np.save(path, likelihood)
+
+
+def generate_samples(cfg: ConfigDict) -> np.ndarray:
+
+    path = os.path.join(cfg.path.output, f'likelihood_file_{cfg.split}.npy')
+    likelihood = np.load(path)
+    nobj, nbins = likelihood.shape
+
+    templates = load_templates(FLAGS.config)
+    ntemplates = len(templates)
+    trange = np.arange(0, ntemplates)
+    prior = prior_maker(nbins, trange, FLAGS.config)
+
+    for nchain in range(cfg.fixed.nchain):
+        nbs = np.random.rand(nbins) * prior
+        hbs = np.random.dirichlet(nbs, 1)
+        nbs = big_sampler(likelihood, hbs, nbins)
+        print(nbs.shape)
 
 
 def main(argv):
@@ -122,6 +149,7 @@ def main(argv):
     # filters = load_filters(FLAGS.config)
     # templates = load_templates(FLAGS.config)
     calculate_likelihood(FLAGS.config)
+    generate_samples(FLAGS.config)
 
 
 if __name__ == "__main__":

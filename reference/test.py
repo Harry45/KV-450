@@ -25,10 +25,13 @@ resume_number = p_int[23]
 m1 = np.arange(mlist[0], mlist[1]+3*mlist[2], mlist[2])
 m2 = np.arange(mlist[0], mlist[1]+2*mlist[3], mlist[3])
 
-print(zlist)
 z1 = np.round(np.arange(zlist[0],zlist[1]+(3*zlist[2]),zlist[2]),5)
 
-print(z1)
+
+print(f'nsamples: {nsamples}')
+print(f'nsamples_split: {nsamples_split}')
+print(f'n_split: {n_split}')
+print(f'number_of_chains: {number_of_chains}')
 
 # from mpi4py import MPI
 

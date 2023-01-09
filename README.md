@@ -29,5 +29,4 @@ python main.py --config=configkids.py
 ## Experiments
 
 -   Simulations
--   Full set of templates (Sets 1, 2, 3, 4, 5)
 -   PCA applied to templates (Sets 1, 2, 3, 4, 5)

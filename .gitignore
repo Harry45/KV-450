@@ -5,6 +5,7 @@ __pycache__/
 
 # folders
 data/
+output/kv/
 gKV/chains/
 gKV/correlations/
 gKV/nz-bayes/

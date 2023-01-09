@@ -73,7 +73,7 @@ def get_config() -> ConfigDict:
     mag.delta = 1.0
 
     # fixed values
-    conf.values = fixed = ConfigDict()
+    conf.fixed = fixed = ConfigDict()
     fixed.nsources = 100000
     fixed.chunk = 1000
     fixed.nlikechunk = 1
