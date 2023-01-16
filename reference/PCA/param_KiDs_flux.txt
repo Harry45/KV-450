@@ -1,0 +1,81 @@
+# List all Paths and Parameters 
+# Input into code using mpiexec -np 4 
+#                               python Nz.py
+#                               --p param.txt
+
+
+## PATHS
+# data path 
+DATA/KiDs
+# output path
+OUTPUT/KiDs
+# filter path 
+FILTER
+# template path
+SED
+# template list folder
+TEMPLATE_LIST
+# filter list folder
+FILTER_LIST
+
+## FILE NAMES 
+# mag file
+flux_corrected.npy
+# error data
+flux_e_corrected.npy
+# filter list
+KiDSVICKING.list
+# template list
+test_240_2.list
+
+## PARAMETERS 
+# zmin,zmax,zfine,z(m)
+0.0 3.0 0.01 0.05 0.05 0.05 0.05 0.1 0.2
+# mmin mmax mfine m
+19 25 0.1 1
+# refference filter
+2
+# number of sources (0 means full amount)
+1000
+# number of samples
+1000
+# size of sample chuncks 
+1000
+# number of likelihood chuncks
+1
+# number of chains
+1
+
+## PARTS OF CODE TO RUN
+# likelihood
+True
+# samples
+True
+# graph
+False
+# resuming samples
+False
+# sample number to resume 
+0
+
+## POST PARAMETERS
+# Simulation template list
+test2.list
+# bpz file name
+Final_model
+# plot folder name
+plots
+# bpz file path
+/rds/general/user/gk1513/home/SCRATCH/cx2-scratch2/Photo_Z_3D/BPZ/test/better_model
+# number of sim chuncks
+4
+# number of sources/cell
+50
+# minimum samples
+1000
+# maximum samples
+1000
+# paralel number
+4
+
+

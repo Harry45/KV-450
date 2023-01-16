@@ -1,0 +1,9 @@
+#!/bin/bash
+
+while read SED
+do
+    for EBV in 0.1 0.2 0.3 0.4 0.5
+    do
+	./redden_SED_Calzetti.sh $SED $EBV
+    done
+done<COSMOS_MOD_BPZ.list
