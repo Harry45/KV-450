@@ -32,6 +32,8 @@ np.save('mag_corrected.npy',mag)
 np.save('mag_e_corrected.npy',mag_e)
 
 
+
+            
 stop
 
 #set up for BPZ
