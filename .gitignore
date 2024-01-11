@@ -8,7 +8,8 @@ data/
 output/kv/
 gKV/chains/
 gKV/correlations/
-gKV/nz-bayes/
+gKV/Nz_Bayes/
+gKv/george-samples/
 gKV/subsets/
 
 # C extensions
